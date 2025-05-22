@@ -1,0 +1,67 @@
+#main.py, 현재 충격량적분부분까지 테스트 마침.
+#모듈들로부터 import
+import time
+import csv
+from integrate_by_sd import integ, integral__by_SD
+from imu_reader import open_serial, read_serial_line
+from sl_valve import open, close 
+from watcher import func_watcher
+from yaw_estimator import yaw_estimator
+
+
+# 아두이노연결 (open_serial 함수 이용 간단하게)
+ser = open_serial(port="COM5", baudrate=9600)  #아두이노우노, IMU센서
+ser1= open_serial(port="COM6", baudrate=9600)  #아두이노메가, mosfet모듈(솔레노이드밸브) 2개, 모터드라이버(리니어 액츄에이터) 1개 
+
+#초기세팅(각 솔레노이드밸브 전부 열어두기 + 리니어액츄에이터로 브레이크 미리 밟아두기 추가 예정)
+open(ser1) 
+
+#main 코드 시작
+#초기값설정
+watcher = [0,0,0,0,0]                            
+i=0
+j=0   
+z=0
+integrate_log = []
+integrate_time= []
+integ_result=0
+
+
+#main
+try:
+    #yiled이용해 yaw, timestamp, values 변수를 계속 받아옴(코드가 복잡해질때 변수관리에 더 용이)
+    for yaw, timestamp, values in yaw_estimator(ser):    
+        #충격량 적분과정
+        z,watcher_1,j,watcher = func_watcher(values, watcher,j,z)
+        integ_result=integral__by_SD(j,z,values,integrate_log,timestamp, integrate_time)
+
+        i += 1
+        print(integ_result)
+        print(watcher)
+        print(watcher_1)
+        print("j={}".format(j)) 
+
+        #case1: 속도 충분할 때              
+        if integ_result>=50:          
+            close(ser1)                 
+            if yaw > 45 or yaw<-45:
+                 open(ser1)
+
+        #case2: 속도 부족할 때
+        elif integ_result>0 and integ_result<50:
+            close(ser1)
+            if yaw >45 or yaw<-45:
+                open(ser1)
+        print("yaw={}".format(yaw))
+            
+             
+
+            
+            
+except KeyboardInterrupt:
+    print("\n[INFO] 데이터 수신 종료")
+
+finally:
+    ser.close
+    ser1.close  
+ 
