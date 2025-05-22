@@ -11,15 +11,6 @@ def main():
     time.sleep(3)
     ser.write(b'S\n')
 
-def foward1(ser1):
-    ser1.write(b'F\n')
-
-def backward1(ser1):
-    ser1.write(b'B\n')   
-
-def stop1(ser2):
-    ser2.write(b'S\n')
-
 def foward2(ser2):
     ser2.write(b'F\n')
 
