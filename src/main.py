@@ -46,19 +46,14 @@ try:
         print(watcher_1)
         print("j={}".format(j)) 
 
-        #충격 감지시 즉각 브레이크제어
-        if watcher[0] - watcher_1[0]  >= 3:
-            if values[1]>0:       #차가 충돌 후 좌측으로 이동
-                close3(ser1)      #좌측후방 브레이크 잠금
-            else:                 #차가 충동 후 우측으로 이동
-                close4(ser1)      #우측후방 브레이크 잠금
+
 
         #case1: 속도 충분할 때
         if integ_result>=50:          
                             
             if yaw > 45 or yaw<-45:
                 open(ser1)
-        #case2: 속도 부족할 때
+        #case2: 속도 부족할 EO
         elif integ_result>0 and integ_result<50:
             
             if yaw >45 or yaw<-45:
