@@ -10,15 +10,15 @@ from yaw_estimator import yaw_estimator
 
 
 # 아두이노연결 (open_serial 함수 이용 간단하게)
-ser = open_serial(port="COM5", baudrate=9600)  #아두이노우노, IMU센서
-ser1= open_serial(port="COM6", baudrate=9600)  #아두이노메가, mosfet모듈(솔레노이드밸브) 2개, 모터드라이버(리니어 액츄에이터) 1개 
-ser2= open_serial(port="COM7", baudrate=9600)
+ser = open_serial(port="COM8", baudrate=9600)  #아두이노우노, IMU센서
+# ser1= open_serial(port="COM6", baudrate=9600)  #아두이노메가, mosfet모듈(솔레노이드밸브) 2개, 모터드라이버(리니어 액츄에이터) 1개 
+# ser2= open_serial(port="COM7", baudrate=9600)
 
 #초기세팅(각 솔레노이드밸브 전부 열어두기 + 리니어액츄에이터로 브레이크 미리 밟아두기 추가 예정)
-open1(ser1)   #좌측전방
-open2(ser1)   #우측전방
-open3(ser2)   #좌측후방
-open4(ser2)   #우측후방
+# open1(ser1)   #좌측전방
+# open2(ser1)   #우측전방
+# open3(ser2)   #좌측후방
+# open4(ser2)   #우측후방
 
 
 #main 코드 시작
@@ -30,6 +30,8 @@ z=0
 integrate_log = []
 integrate_time= []
 integ_result=0
+imu_log = open("imu_log.csv", "w")
+imu_log_list=[]
 
 
 #main
@@ -40,29 +42,32 @@ try:
         z,watcher_1,j,watcher = func_watcher(values, watcher,j,z)
         integ_result=integral__by_SD(j,z,values,integrate_log,timestamp, integrate_time)
         i += 1
+        csv_line = f"{timestamp}," + ",".join([str(v) for v in values]) + "\n"   
+        imu_log.write(csv_line)
 
         print(integ_result)
         print(watcher)
         print(watcher_1)
         print("j={}".format(j)) 
 
-        #충격 감지시 즉각 브레이크제어
-        if watcher[0] - watcher_1[0]  >= 3:
-            if values[1]>0:       #차가 충돌 후 좌측으로 이동
-                close3(ser1)      #좌측후방 브레이크 잠금
-            else:                 #차가 충동 후 우측으로 이동
-                close4(ser1)      #우측후방 브레이크 잠금
+        # #충격 감지시 즉각 브레이크제어
+        # if watcher[0] - watcher_1[0]  >= 3:  
+        #     if values[1]>0:       #차가 충돌 후 좌측으로 이동
+        #         close3(ser1)      #좌측후방 브레이크 잠금
+        #     else:                 #차가 충동 후 우측으로 이동
+        #         close4(ser1)      #우측후방 브레이크 잠금
 
-        #case1: 속도 충분할 때
-        if integ_result>=50:          
+        # #case1: 속도 충분할 때
+        # if integ_result>=50:          
                             
-            if yaw > 45 or yaw<-45:
-                open(ser1)
-        #case2: 속도 부족할 때
-        elif integ_result>0 and integ_result<50:
+        #     if yaw > 45 or yaw<-45:
+        #         open(ser1)
+        # #case2: 속도 부족할 때
+        # elif integ_result>0 and integ_result<50:
             
-            if yaw >45 or yaw<-45:
-                open(ser1)
+        #     if yaw >45 or yaw<-45:
+        #         open(ser1)
+       
             
              
 
@@ -73,5 +78,6 @@ except KeyboardInterrupt:
 
 finally:
     ser.close
-    ser1.close  
+    # ser1.close  
+    imu_log.close()
  

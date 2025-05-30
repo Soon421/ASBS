@@ -2,7 +2,7 @@
 import serial
 import time
 
-def open_serial(port="COM5", baudrate=9600, timeout=1):
+def open_serial(port="COM8", baudrate=9600, timeout=1):
     try:
         ser = serial.Serial(port, baudrate, timeout=timeout)
     except serial.SerialException as e:
@@ -30,7 +30,7 @@ def read_serial_line(ser):
         timestamp = time.time()
         yield timestamp, values
 
-def main(port="COM5", baudrate=9600):
+def main(port="COM8", baudrate=9600):
 
     try:
         ser = open_serial(port, baudrate)
