@@ -4,7 +4,7 @@ def func_watcher(values,watcher,j,z):
     watcher_1= list(watcher)                        # 한 루프 전의 watcher를 설정
     for k in [3,2,1,0]:
         watcher[k+1] = watcher[k]                                  # watcher 안에 값들을 한칸씩 옆으로 옮김
-        watcher[0] = values[0]                        # 한 칸씩 밀었으니까 첫번째 칸에 새로 받은 값 채움
+    watcher[0] = values[0]                        # 한 칸씩 밀었으니까 첫번째 칸에 새로 받은 값 채움
         
            
     if  watcher[0] - watcher_1[0]  >= 3:           # 가속도가 직전보다 3 이상 크면 그때부터 주워담음
