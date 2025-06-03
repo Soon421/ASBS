@@ -2,7 +2,7 @@
 import serial
 import time
 
-def open_serial(port="COM8", baudrate=9600, timeout=1):
+def open_serial(port="COM8", baudrate=115200, timeout=1):
     try:
         ser = serial.Serial(port, baudrate, timeout=timeout)
     except serial.SerialException as e:

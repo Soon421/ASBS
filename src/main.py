@@ -10,7 +10,7 @@ from yaw_estimator import yaw_estimator
 
 
 # 아두이노연결 (open_serial 함수 이용 간단하게)
-ser = open_serial(port="COM8", baudrate=9600)  #아두이노우노, IMU센서
+ser = open_serial(port="COM8", baudrate=115200)  #아두이노우노, IMU센서
 # ser1= open_serial(port="COM6", baudrate=9600)  #아두이노메가, mosfet모듈(솔레노이드밸브) 2개, 모터드라이버(리니어 액츄에이터) 1개 
 # ser2= open_serial(port="COM7", baudrate=9600)
 
@@ -32,6 +32,7 @@ integrate_time= []
 integ_result=0
 imu_log = open("imu_log.csv", "w")
 imu_log_list=[]
+delta_vlist=[]
 
 
 #main
@@ -40,7 +41,7 @@ try:
     for yaw, timestamp, values in yaw_estimator(ser):    
         #충격량 적분과정
         z,watcher_1,j,watcher = func_watcher(values, watcher,j,z)
-        integ_result=integral__by_SD(j,z,values,integrate_log,timestamp, integrate_time)
+        integ_result=integral__by_SD(j,z,values,integrate_log,timestamp, integrate_time, delta_vlist)
         i += 1
         csv_line = f"{timestamp}," + ",".join([str(v) for v in values]) + "\n"   
         imu_log.write(csv_line)
@@ -80,4 +81,5 @@ finally:
     ser.close
     # ser1.close  
     imu_log.close()
+    print(delta_vlist)
  
