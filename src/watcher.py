@@ -8,9 +8,9 @@ def func_watcher(values,watcher,j,z):
     watcher[0] = values[0]                       # 한 칸씩 밀었으니까 첫번째 칸에 새로 받은 값 채움
 
 
-    if  watcher[0] - watcher_1[0]  >= 0.2:           
+    if  watcher[0] - watcher_1[0]  >= 0.07 and watcher[0]>0.15:           
         jj=1
-    elif watcher[0] - watcher_1[0] <= -0.2 :        
+    elif watcher[0]<0:        
         jj=0
     else:
         jj=j
