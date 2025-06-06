@@ -5,7 +5,7 @@ from integrate_by_sd import integ
 from imu_reader import open_serial, read_serial_line
 
 def main():
-    ser = open_serial(port="COM5", baudrate=9600)
+    ser = open_serial(port="COM8", baudrate=9600)
     
     
     gyroZlist = []      #여기서 gyroZ값만 모으는 리스트 생성
@@ -44,6 +44,7 @@ def yaw_estimator(ser):
         gyroZlist.append(gyroZ)              #append 메소드 이용해서 gyroZ값을 리스트에 계속 추가
         tlist.append(t)
         yaw = integ(gyroZlist,tlist)
+
 
         yield yaw, timestamp, values
 
