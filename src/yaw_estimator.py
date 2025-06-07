@@ -36,7 +36,9 @@ def yaw_estimator(ser):
 
     for timestamp, values in read_serial_line(ser): 
         if len(values) < 6: continue         # 값이 온전히 안들어오는경우도 진행되도록
+
         t    = float(timestamp)              #실수화
+
         gyroZ =float(values[5])
         
         

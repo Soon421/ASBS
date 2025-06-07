@@ -15,13 +15,6 @@ def func_watcher(values,watcher,j,z):
     else:
         jj=j
         
-           
-    # if  watcher[0]  >= 0.2:            마땅한 방한이 안떠오르면 이런식으로하면 첫충격량 계산은 잘할듯.
-    #     jj=1
-    # elif watcher[0] <= 0.2 :        
-    #     jj=0
-    # else:
-    #     jj=j    
 
         
     if j != jj:
