@@ -44,6 +44,7 @@ yaw_handled = False
 
 def noticer():
     print("!!!!!!!!!!!!!!!!")
+    
 threading.Timer(17, lambda:noticer).start()
 threading.Timer(20, lambda: whole_maneuver()).start()
 
