@@ -36,7 +36,7 @@ time.sleep(1.5)
 
 open_l(ser_rear)
 left_turn(ser_steer)
-time.sleep(1)
+time.sleep(0.8)
 stop(ser_steer)          
 
 
