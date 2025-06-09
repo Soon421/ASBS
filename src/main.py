@@ -13,9 +13,9 @@ from linear_act import foward, backward, stop, foward2, backward2, stop2, left_t
 
 
 # 아두이노연결 (open_serial 함수 이용 간단하게)
-ser = open_serial(port="COM8", baudrate=115200)  #아두이노우노, IMU센서
-ser_steer= open_serial(port="COM6", baudrate=115200)  #아두이노메가-전방
-ser_rear= open_serial(port="COM7", baudrate=115200)  #아두이노메가-후방 mosfet모듈(솔레노이드밸브) 2개, 모터드라이버(리니어 액츄에이터) 1개 
+ser = open_serial(port="COM12", baudrate=115200)  #아두이노우노, IMU센서
+ser_steer= open_serial(port="COM9", baudrate=115200)  #아두이노메가-전방
+ser_rear= open_serial(port="COM10", baudrate=115200)  #아두이노메가-후방 mosfet모듈(솔레노이드밸브) 2개, 모터드라이버(리니어 액츄에이터) 1개 
 
 #초기세팅(각 솔레노이드밸브 전부 닫아두기 + 리니어액츄에이터로 브레이크 미리 밟아두기 추가 예정)
 
