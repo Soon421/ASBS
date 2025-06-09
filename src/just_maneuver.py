@@ -25,11 +25,6 @@ imu_log = open_l("imu_log.csv", "w")
 imu_log_list=[]
 delta_vlist=[] 
 
-close_l(ser_rear)   #좌측후방
-close_r(ser_rear)   #우측후방
-foward(ser_rear)
-yaw_handled = False
-
 def whole_maneuver():
     
     print('7초 뒤에 미셈셈')
@@ -42,7 +37,15 @@ def whole_maneuver():
     time.sleep(0.8)
     stop(ser_steer)          
 
-threading.Timer(1.2, lambda: whole_maneuver()).start()
+close_l(ser_rear)   #좌측후방
+close_r(ser_rear)   #우측후방
+foward(ser_rear)
+yaw_handled = False
+
+def noticer():
+    print("!!!!!!!!!!!!!!!!")
+threading.Timer(17, lambda:noticer).start()
+threading.Timer(20, lambda: whole_maneuver()).start()
 
 for yaw, timestamp, values in yaw_estimator(ser):
     z,watcher_1,j,watcher = func_watcher(values, watcher,j,z)
