@@ -28,25 +28,37 @@ delta_vlist=[]
 close_l(ser_rear)   #좌측후방
 close_r(ser_rear)   #우측후방
 foward(ser_rear)
+yaw_handled = False
 
-print('7초 뒤에 미셈셈')
-time.sleep(7)
-print('미셈')
-time.sleep(1.5)
+def whole_maneuver():
+    
+    print('7초 뒤에 미셈셈')
+    time.sleep(7)
+    print('미셈')
+    time.sleep(1.5)
 
-open_l(ser_rear)
-left_turn(ser_steer)
-time.sleep(0.8)
-stop(ser_steer)          
+    open_l(ser_rear)
+    left_turn(ser_steer)
+    time.sleep(0.8)
+    stop(ser_steer)          
 
+threading.Timer(1.2, lambda: whole_maneuver()).start()
 
+for yaw, timestamp, values in yaw_estimator(ser):
+    z,watcher_1,j,watcher = func_watcher(values, watcher,j,z)
+    
+    i += 1
+    csv_line = f"{timestamp}," + ",".join([str(v) for v in values]) + "\n"   
+    imu_log.write(csv_line)
 
-right_turn(ser_steer)  
-threading.Timer(1.2, lambda: stopstop(ser_steer)).start()
-open_r(ser_rear)
-threading.Timer(0.1, lambda: close_r(ser_steer)).start()
-backward(ser_rear)
-threading.Timer(0.1, lambda: foward(ser_rear)).start()
-threading.Timer(0.1, lambda: close_l(ser_steer)).start()
-threading.Timer(1.5,lambda:open_r(ser_rear)).start()
-yaw_handled= True
+    if not yaw_handled and (yaw > 45 or yaw<-45):    #  이거 코드가 이상한데...? 한번 비교해보시길. 나는 바꾼다 보고 확인 바람람
+        right_turn(ser_steer)  
+        threading.Timer(1.2, lambda: stopstop(ser_steer)).start()
+        open_r(ser_rear)
+        threading.Timer(0.1, lambda: close_r(ser_steer)).start()
+        backward(ser_rear)
+        threading.Timer(0.1, lambda: foward(ser_rear)).start()
+        threading.Timer(0.1, lambda: close_l(ser_steer)).start()
+        threading.Timer(1.5,lambda:open_r(ser_rear)).start()
+        yaw_handled= True
+    
