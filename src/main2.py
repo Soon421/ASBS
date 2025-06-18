@@ -58,19 +58,16 @@ try:
         # 좌측
         # case1: 속도 충분할 때
         if  not shock_handled and len(delta_vlist) > 0 and delta_vlist[0]>=0.1:
-            open1(ser2)
             left_turn(ser1)
             threading.Timer(1.0, lambda: stopstop(ser1)).start()
     
             shock_handled = True         
                             
         if shock_handled and not yaw_handled  and delta_vlist[0] >= 0.1 and abs(yaw)>30:
-            backward(ser2)
-            threading.Timer(0.1, lambda: stop(ser2)).start()
-            close1(ser2)
             open2(ser2)
             foward(ser2)
             right_turn(ser1) 
+            threading.Timer(1.2, lambda: open2(ser2)).start() 
             threading.Timer(1.5, lambda: stopstop(ser1)).start() 
             yaw_handled= True
 
@@ -78,8 +75,8 @@ try:
                
         #case2: 속도 부족할 때
         if not shock_handled and len(delta_vlist) > 0 and delta_vlist[0]>0 and delta_vlist[0]<0.1:
-            open1(ser2)
             left_turn(ser1)
+            threading.Timer(1.5, lambda: open1(ser2)).start()
             threading.Timer(2.5, lambda: stopstop(ser1)).start() 
             shock_handled = True
 
@@ -106,3 +103,4 @@ finally:
     imu_log.close()
     print("적분된 값은{}이다.".format(delta_vlist))
     print("yaw값은 {}".format(yaw))
+ 

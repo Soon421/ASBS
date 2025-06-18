@@ -5,9 +5,9 @@ from imu_reader import open_serial
 
 def main():
     ser=open_serial(port="COM6", baudrate=115200)
-    ser.write(b'B\n')
-    ser.write(b'f\n')
-    time.sleep(0.2)
+    ser.write(b'F\n')
+    ser.write(b'b\n')
+    time.sleep(0.3)
     ser.write(b'S\n')
     ser.write(b's\n')
 

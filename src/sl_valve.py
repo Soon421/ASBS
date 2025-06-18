@@ -4,7 +4,7 @@ import time
 from imu_reader import open_serial
 
 def main():
-    ser=open_serial(port="COM6", baudrate=9600)
+    ser=open_serial(port="COM6", baudrate=115200)
     ser.write(b'O\n')
     time.sleep(5)
     ser.write(b'C\n')

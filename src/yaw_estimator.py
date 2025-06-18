@@ -5,7 +5,7 @@ from integrate_by_sd import integ
 from imu_reader import open_serial, read_serial_line
 
 def main():
-    ser = open_serial(port="COM8", baudrate=9600)
+    ser = open_serial(port="COM8", baudrate=115200)
     
     
     gyroZlist = []      #여기서 gyroZ값만 모으는 리스트 생성
@@ -33,21 +33,29 @@ def yaw_estimator(ser):
     
     gyroZlist = []      #여기서 gyroZ값만 모으는 리스트 생성
     tlist=[]
+    acclist   = []
 
     for timestamp, values in read_serial_line(ser): 
         if len(values) < 6: continue         # 값이 온전히 안들어오는경우도 진행되도록
 
         t    = float(timestamp)              #실수화
-
         gyroZ =float(values[5])
+
+        #속도 추적용 가속도 데이터 (크기로 통합)
+        ax = float(values[0])
+        ay = float(values[1])
+        az = float(values[2])
+        accel = (ax**2 + ay**2 + az**2)**0.5
+        acclist.append(accel)
         
         
         gyroZlist.append(gyroZ)              #append 메소드 이용해서 gyroZ값을 리스트에 계속 추가
         tlist.append(t)
         yaw = integ(gyroZlist,tlist)
+        speed = integ(acclist,tlist)
 
 
-        yield yaw, timestamp, values
+        yield yaw, speed, t, values
 
 
 
