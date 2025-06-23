@@ -5,7 +5,7 @@ import csv
 import threading
 from integrate_by_sd import integ, integral__by_SD
 from imu_reader import open_serial, read_serial_line
-from sl_valve import open1, open2, close1, close2
+from sl_valve import open_1, open_2, close_1, close_2
 from watcher import func_watcher
 from yaw_estimator import yaw_estimator
 from linear_act import foward, backward, stop, foward2, backward2, stop2, left_turn, right_turn,stopstop
@@ -15,6 +15,7 @@ from linear_act import foward, backward, stop, foward2, backward2, stop2, left_t
 # 아두이노연결 (open_serial 함수 이용 간단하게)
 ser = open_serial(port="COM8", baudrate=115200)  #아두이노우노, IMU센서
 ser_steer= open_serial(port="COM6", baudrate=115200)  #아두이노메가-전방
+<<<<<<< HEAD
 ser_brake= open_serial(port="COM7", baudrate=115200)  #아두이노메가-후방 mosfet모듈(솔레노이드밸브) 2개, 모터드라이버(리니어 액츄에이터) 1개 
 
 #초기세팅(각 솔레노이드밸브 전부 닫아두기 + 리니어액츄에이터로 브레이크 미리 밟아두기 추가 예정)
@@ -22,6 +23,7 @@ ser_brake= open_serial(port="COM7", baudrate=115200)  #아두이노메가-후방
 close1(ser_brake)   #좌측후방
 close2(ser_brake)   #우측후방
 foward(ser_brake)   #브레이크 힘껏 눌러두기
+
 
 
 #main 코드 시작
@@ -58,6 +60,7 @@ try:
         # 좌측
         # case1: 속도 충분할 때
         if  not shock_handled and len(delta_vlist) > 0 and delta_vlist[0]>=0.2:
+
             open1(ser_brake)
             left_turn(ser_steer)
             threading.Timer(1.0, lambda: stopstop(ser_steer)).start()
@@ -103,6 +106,8 @@ finally:
     ser.close()
     ser_steer.close() 
     ser_brake.close()        #아두이노 포트 연결 끊기
+
+
     imu_log.close()
     print("적분된 값은{}이다.".format(delta_vlist))
     print("yaw값은 {}".format(yaw))

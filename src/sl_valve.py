@@ -9,16 +9,16 @@ def main():
     time.sleep(5)
     ser.write(b'C\n')
 
-def open1(ser):
+def open_l(ser):
     ser.write(b'O1\n')
 
-def close1(ser):
+def close_l(ser):
     ser.write(b'C1\n')    
 
-def open2(ser):
+def open_r(ser):
     ser.write(b'O2\n')
 
-def close2(ser):
+def close_r(ser):
     ser.write(b'C2\n')  
  
 
