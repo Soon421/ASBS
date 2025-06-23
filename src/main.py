@@ -1,4 +1,4 @@
-#main.py, 현재 충격량적분부분까지 테스트 마침.
+#main2.py case2 전용
 #모듈들로부터 import
 import time
 import csv
@@ -57,14 +57,14 @@ try:
 
         # 좌측
         # case1: 속도 충분할 때
-        if  not shock_handled and len(delta_vlist) > 0 and delta_vlist[0]>=0.1:
+        if  not shock_handled and len(delta_vlist) > 0 and delta_vlist[0]>=0.2:
             open1(ser2)
             left_turn(ser1)
             threading.Timer(1.0, lambda: stopstop(ser1)).start()
     
             shock_handled = True         
                             
-        if shock_handled and not yaw_handled  and delta_vlist[0] >= 0.1 and abs(yaw)>30:
+        if shock_handled and not yaw_handled  and delta_vlist[0] >= 0.2 and abs(yaw)>30:
             backward(ser2)
             threading.Timer(0.1, lambda: stop(ser2)).start()
             close1(ser2)
@@ -77,7 +77,7 @@ try:
 
                
         #case2: 속도 부족할 때
-        if not shock_handled and len(delta_vlist) > 0 and delta_vlist[0]>0 and delta_vlist[0]<0.1:
+        if not shock_handled and len(delta_vlist) > 0 and delta_vlist[0]>0 and delta_vlist[0]<0.2:
             open1(ser2)
             left_turn(ser1)
             threading.Timer(2.5, lambda: stopstop(ser1)).start() 
