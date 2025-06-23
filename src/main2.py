@@ -1,11 +1,11 @@
-#main.py, 현재 충격량적분부분까지 테스트 마침.
+#main2.py, case2 자세회복 확인 위한 코드
 #모듈들로부터 import
 import time
 import csv
 import threading
 from integrate_by_sd import integ, integral__by_SD
 from imu_reader import open_serial, read_serial_line
-from sl_valve import open1, open2, close1, close2
+from sl_valve import open_l, open_r, close_l, close_r
 from watcher import func_watcher
 from yaw_estimator import yaw_estimator
 from linear_act import foward, backward, stop, foward2, backward2, stop2, left_turn, right_turn,stopstop
@@ -14,14 +14,14 @@ from linear_act import foward, backward, stop, foward2, backward2, stop2, left_t
 
 # 아두이노연결 (open_serial 함수 이용 간단하게)
 ser = open_serial(port="COM8", baudrate=115200)  #아두이노우노, IMU센서
-ser1= open_serial(port="COM6", baudrate=115200)  #아두이노메가-전방
-ser2= open_serial(port="COM7", baudrate=115200)  #아두이노메가-후방 mosfet모듈(솔레노이드밸브) 2개, 모터드라이버(리니어 액츄에이터) 1개 
+ser_steer= open_serial(port="COM6", baudrate=115200)  #아두이노메가-전방
+ser_brake= open_serial(port="COM7", baudrate=115200)  #아두이노메가-후방 mosfet모듈(솔레노이드밸브) 2개, 모터드라이버(리니어 액츄에이터) 1개 
 
 #초기세팅(각 솔레노이드밸브 전부 닫아두기 + 리니어액츄에이터로 브레이크 미리 밟아두기 추가 예정)
 
-close1(ser2)   #좌측후방
-close2(ser2)   #우측후방
-foward(ser2)   #브레이크 힘껏 눌러두기
+close_l(ser_brake)   #좌측후방
+close_r(ser_brake)   #우측후방
+foward(ser_brake)   #브레이크 힘껏 눌러두기
 
 
 #main 코드 시작
@@ -58,26 +58,27 @@ try:
         # 좌측
         # case1: 속도 충분할 때
         if  not shock_handled and len(delta_vlist) > 0 and delta_vlist[0]>=0.1:
-            left_turn(ser1)
-            threading.Timer(1.0, lambda: stopstop(ser1)).start()
+            left_turn(ser_steer)
+            threading.Timer(1.0, lambda: stopstop(ser_steer)).start()
     
             shock_handled = True         
                             
         if shock_handled and not yaw_handled  and delta_vlist[0] >= 0.1 and abs(yaw)>30:
-            open2(ser2)
-            foward(ser2)
-            right_turn(ser1) 
-            threading.Timer(1.2, lambda: open2(ser2)).start() 
-            threading.Timer(1.5, lambda: stopstop(ser1)).start() 
+            open_r(ser_brake)
+            foward(ser_brake)
+            right_turn(ser_steer) 
+            threading.Timer(1.2, lambda: open_r(ser_brake)).start() 
+            threading.Timer(1.5, lambda: stopstop(ser_steer)).start() 
             yaw_handled= True
 
 
                
         #case2: 속도 부족할 때
         if not shock_handled and len(delta_vlist) > 0 and delta_vlist[0]>0 and delta_vlist[0]<0.1:
-            left_turn(ser1)
-            threading.Timer(1.5, lambda: open1(ser2)).start()
-            threading.Timer(2.5, lambda: stopstop(ser1)).start() 
+            close_l(ser_brake)
+            left_turn(ser_steer)
+            threading.Timer(1.5, lambda: open_l(ser_brake)).start()
+            threading.Timer(2.5, lambda: stopstop(ser_steer)).start() 
             shock_handled = True
 
         
@@ -88,18 +89,18 @@ except KeyboardInterrupt:
     print("\n[INFO] 데이터 수신 종료")
 
 finally:
-    backward(ser2)
+    backward(ser_brake)
     time.sleep(3)      #여기서 실험 종료 시 브레이크 풀고 솔밸닫는 코드 추가
-    stop(ser2)
-    open1(ser2)
-    open2(ser2)       
+    stop(ser_brake)
+    open_l(ser_brake)
+    open_r(ser_brake)       
     time.sleep(2)       #밸브 좀 열어뒀다가
-    close1(ser2)
-    close2(ser2)        #밸브 닫기
-    stopstop(ser1)      #조향 리니어도 닫기
+    close_l(ser_brake)
+    close_r(ser_brake)        #밸브 닫기
+    stopstop(ser_steer)      #조향 리니어도 닫기
     ser.close()
-    ser1.close() 
-    ser2.close()        #아두이노 포트 연결 끊기
+    ser_steer.close() 
+    ser_brake.close()        #아두이노 포트 연결 끊기
     imu_log.close()
     print("적분된 값은{}이다.".format(delta_vlist))
     print("yaw값은 {}".format(yaw))
