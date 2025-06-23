@@ -12,7 +12,7 @@ def integ(log_data, time_data):
     
 def integral__by_SD(j,z,values,integrate_log, t, integrate_time, delta_vlist):
     integ_result=0
-    if j==1:                                                           #여기가 이상함 z 는 원래 가속도의 증가 감소 변화 횟수를 위한 변수였음
+    if j==1:                                                           
         integrate_log.append(values[0])
         integrate_time.append(t)
 
